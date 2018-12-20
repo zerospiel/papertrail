@@ -48,14 +48,23 @@ func (s *MySuite) TestRealEndpoint(c *check.C) {
 	  This is only to test the real endpoint.
 	  Please remove the endpoint from the code after using this test
 	*/
-	endpoint := "ENDPOINT.papertrailapp.com:PORT"
+	endpoint := "logsN.papertrailapp.com:XXXXX"
 
-	h, err := New(endpoint)
+	h, err := New("udp", endpoint)
 	c.Assert(h, check.NotNil)
 	c.Assert(err, check.IsNil)
 
 	log.SetHandler(h)
-	ctx := log.WithField("key 5", "value 5")
+	ctx := log.WithField("key", "udp")
+	ctx.Info("this is an Info message")
+
+	// This is only if you enabled TCP (plain text) option in Papertrail Settings
+	h, err = New("tcp", endpoint)
+	c.Assert(h, check.NotNil)
+	c.Assert(err, check.IsNil)
+
+	log.SetHandler(h)
+	ctx = log.WithField("key", "tcp")
 	ctx.Info("this is an Info message")
 
 	// After this point you should be able to see the entry on the web interface
