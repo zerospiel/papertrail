@@ -17,7 +17,12 @@ type Handler struct {
 
 // New creates new Handler pointer to use it within apex/log logger
 func New(endpoint string) (h *Handler, err error) {
-	conn, err := net.Dial("udp", endpoint)
+	dialer := &net.Dialer{
+		LocalAddr: &net.UDPAddr{
+			Port: 31337,
+		},
+	}
+	conn, err := dialer.Dial("udp", endpoint)
 	if err != nil {
 		return nil, err
 	}
